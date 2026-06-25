@@ -1,6 +1,6 @@
 import { api } from '../api';
-import { escHtml, safeUrl, formatPrice, coordStr, priorityLabel, priorityClass, sortRecords, calcStats, type SortKey, type SortDir } from '../utils';
-import type { CircleRecord, Priority } from '../types';
+import { escHtml, safeUrl, formatPrice, coordStr, priorityLabel, priorityClass, sortRecords, type SortKey, type SortDir } from '../utils';
+import type { CircleRecord } from '../types';
 
 let sortKey: SortKey = 'priority';
 let sortDir: SortDir = 'asc';
@@ -47,17 +47,15 @@ async function loadRecords(eventId: string): Promise<void> {
 }
 
 function renderBrowseStats(el: HTMLElement): void {
-  const { totalBudget, byPriority } = calcStats(records);
-
-  const priorityRows = ([1, 2, 3, 4] as Priority[])
-    .filter(p => byPriority.has(p))
-    .map(p => `<div class="stat-box"><div class="stat-label">優先度 ${p}</div><div class="stat-value">${formatPrice(byPriority.get(p)!)}</div></div>`)
-    .join('');
+  const budget = records
+    .filter(r => r.price > 0 && r.priority >= 1 && r.priority <= 3)
+    .reduce((s, r) => s + r.price, 0);
+  const carrying = Math.ceil(budget * 1.25 / 500) * 500;
 
   el.innerHTML = `
-    <div class="stat-box"><div class="stat-label">総予算（有効）</div><div class="stat-value">${formatPrice(totalBudget)}</div></div>
-    <div class="stat-box"><div class="stat-label">件数</div><div class="stat-value">${records.length}</div></div>
-    ${priorityRows}`;
+    <div class="stat-box"><div class="stat-label">予算（優先度1-3）</div><div class="stat-value">${formatPrice(budget)}</div></div>
+    <div class="stat-box"><div class="stat-label">持ち込み金額</div><div class="stat-value">${formatPrice(carrying)}</div></div>
+    <div class="stat-box"><div class="stat-label">件数</div><div class="stat-value">${records.length}</div></div>`;
 }
 
 function renderBrowseTable(wrap: HTMLElement): void {
