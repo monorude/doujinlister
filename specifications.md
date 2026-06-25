@@ -51,4 +51,34 @@ specifications.md
 * 実際のところ、会場では主に紙に印刷した地図をもとにし、このデータ群は最終確認程度にしか使わないため、繋がらない場合は考慮しない(また、当日直前にスプレッドシートアプリでオフライン保存を行う)
   * 今回の主眼は入力・整理の簡略化であるため、出力は現行維持でよい。
 
-#　実装状況
+# 実装状況
+
+## 技術スタック（確定）
+| 層 | 技術 |
+|---|---|
+| フロントエンド | Vite + TypeScript + HTML/CSS（GitHub Pages） |
+| バックエンド | TypeScript + Hono（Cloudflare Workers） |
+| DB | Google Sheets API（サービスアカウント認証） |
+| 認証情報管理 | Cloudflare Secrets |
+
+## フロントエンド `frontend/`  完了
+* 4画面をハッシュルーターで切り替え（イベント / 登録 / 閲覧 / 当日）
+* **イベント管理画面**: イベントDB の一覧表示・追加フォーム
+* **登録画面**: 全フィールド入力フォーム、ジャンル補完(datalist)、重複検出時の確認ダイアログ→上書き選択
+* **閲覧画面**: イベント選択 → レコードテーブル（任意列ソート）、集計（予算 優先度1-3合算・持ち込み金額）
+* **当日画面**: 当日開催イベントを日付自動判定、購入チェック・実費入力（行クラス・集計インタラクティブ更新）
+* `api.ts` が `VITE_API_BASE_URL` 環境変数の有無でモック/本番APIを自動切り替え
+
+## バックエンド `backend/`  完了（未デプロイ）
+* Hono ルーター + CORS 設定済み
+* エンドポイント: `GET/POST /api/events`、`GET/POST /api/records`、`PUT/PATCH /api/records/:id`、`GET /api/genres`、`POST /api/setup`
+* レコードID は `"{年}:{行番号}"` 形式でシート行を直接参照
+* 年次シート自動判定: イベントDB の `startAt` から書き込み・読み込み先シートを決定
+* `POST /api/setup` でヘッダー行の初期化が可能
+
+## 残作業
+* GCP サービスアカウント作成・スプレッドシートへの共有設定
+* `wrangler.toml` の `SPREADSHEET_ID` 記入 + `wrangler secret put` でキー登録
+* `wrangler deploy` で Workers にデプロイ
+* `POST /api/setup` を1回実行してシートヘッダーを初期化
+* フロントエンドの `VITE_API_BASE_URL` を設定して GitHub Pages にデプロイ
