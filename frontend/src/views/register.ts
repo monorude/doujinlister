@@ -108,6 +108,19 @@ export async function renderRegister(container: HTMLElement): Promise<void> {
   const form = document.getElementById('register-form') as HTMLFormElement;
   const alertEl = document.getElementById('register-alert')!;
 
+  const annoInput   = form.elements.namedItem('announcement') as HTMLInputElement;
+  const authorInput = form.elements.namedItem('author') as HTMLInputElement;
+  annoInput.addEventListener('change', () => {
+    if (authorInput.value) return;
+    try {
+      const url = new URL(annoInput.value);
+      if (url.hostname === 'x.com' || url.hostname === 'twitter.com') {
+        const user = url.pathname.split('/').filter(Boolean)[0];
+        if (user) authorInput.value = `${url.origin}/${user}`;
+      }
+    } catch { /* 無効なURLは無視 */ }
+  });
+
   form.addEventListener('submit', async e => {
     e.preventDefault();
     alertEl.innerHTML = '';
