@@ -108,6 +108,13 @@ export async function renderRegister(container: HTMLElement): Promise<void> {
   const form = document.getElementById('register-form') as HTMLFormElement;
   const alertEl = document.getElementById('register-alert')!;
 
+  const today = new Date().toISOString().slice(0, 10);
+  const upcoming = events
+    .filter(e => e.startAt.slice(0, 10) >= today)
+    .sort((a, b) => a.startAt.localeCompare(b.startAt));
+  const defaultEventId = (upcoming[0] ?? events[0]).id;
+  (form.elements.namedItem('eventId') as HTMLSelectElement).value = defaultEventId;
+
   const annoInput   = form.elements.namedItem('announcement') as HTMLInputElement;
   const authorInput = form.elements.namedItem('author') as HTMLInputElement;
   annoInput.addEventListener('change', () => {

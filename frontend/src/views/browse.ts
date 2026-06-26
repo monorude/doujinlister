@@ -15,7 +15,11 @@ export async function renderBrowse(container: HTMLElement): Promise<void> {
     return;
   }
 
-  const defaultId = events[0].id;
+  const today = new Date().toISOString().slice(0, 10);
+  const upcoming = events
+    .filter(e => e.startAt.slice(0, 10) >= today)
+    .sort((a, b) => a.startAt.localeCompare(b.startAt));
+  const defaultId = (upcoming[0] ?? events[0]).id;
 
   container.innerHTML = `
     <div class="card" style="margin-bottom:0.75rem">
@@ -28,6 +32,7 @@ export async function renderBrowse(container: HTMLElement): Promise<void> {
     <div id="browse-table-wrap" class="card" style="padding:0;overflow:hidden"></div>`;
 
   const sel = document.getElementById('event-select') as HTMLSelectElement;
+  sel.value = defaultId;
   sel.addEventListener('change', () => loadRecords(sel.value));
   await loadRecords(defaultId);
 }
