@@ -1,0 +1,10 @@
+name = "doujin-prj"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[vars]
+# スプレッドシートIDをここに設定
+SPREADSHEET_ID = "1drgvq_MIEoVr9Ssnu0b7OvO9ynsIwL3Ss1BPROqP59Q"
+
+# サービスアカウントのJSONキーはシークレットで管理:
+#   wrangler secret put GOOGLE_SERVICE_ACCOUNT_JSON

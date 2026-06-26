@@ -1,0 +1,5 @@
+/discord_bot
+node_modules/
+frontend/dist/
+.env
+*.local
