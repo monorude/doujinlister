@@ -40,15 +40,15 @@ export async function renderRegister(container: HTMLElement): Promise<void> {
               </div>
               <div>
                 <label>枠</label>
-                <input name="block" placeholder="例: F">
+                <input name="block" placeholder="例: F, あ">
               </div>
               <div>
                 <label>番</label>
-                <input name="number" placeholder="例: 4">
+                <input name="number" placeholder="例: 1">
               </div>
               <div>
                 <label>補</label>
-                <input name="sub" placeholder="例: b">
+                <input name="sub" placeholder="例: a">
               </div>
             </div>
           </div>
@@ -77,7 +77,7 @@ export async function renderRegister(container: HTMLElement): Promise<void> {
 
           <div class="form-group">
             <label>ジャンル</label>
-            <input name="genre" list="genre-list" placeholder="例: 東方">
+            <input name="genre" list="genre-list" placeholder="例: カフェタキ, 総合, ウマトレ">
             <datalist id="genre-list">
               ${genres.map(g => `<option value="${escHtml(g)}">`).join('')}
             </datalist>

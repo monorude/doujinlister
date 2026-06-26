@@ -64,7 +64,7 @@ function renderEventForm(container: HTMLElement): void {
           </div>
           <div class="form-group">
             <label>イベントジャンル</label>
-            <input name="genre" placeholder="例: 総合, 東方">
+            <input name="genre" placeholder="例: 総合, ウマ娘">
           </div>
         </div>
         <div class="form-actions">
